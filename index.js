@@ -1,31 +1,38 @@
-import { readInput, inquirerMenu, pause } from './helpers/inquirer.js';
+import { readInput, inquirerMenu, pause , listCities } from './helpers/inquirer.js';
 import Search from './models/search.js';
+
+// initialize dotenv configuration
+import dotenv from 'dotenv';
+dotenv.config();
 
 const main = async () => {
     const search = new Search();
     let opt; 
-
     do {
         opt = await inquirerMenu();
-        console.log({ opt });
 
         switch (opt) {
             case 1:
                 // Show message
-                const site = await readInput('City: ');
-                await  search.searchCity(site);
+                const input = await readInput('City: ');
 
                 // Search cities
-                // Select city
-                // Weather
-                // Show results
+                const places = await search.searchCity(input);
+                const selectedId = await listCities(places);
+                const selectedCity = places.find( place => place.id === selectedId);  
+
+                // Search weather of the city
+                const weather = await search.weatherCity(selectedCity.lat, selectedCity.lng);
+            
                 console.log('\nInformation of the city:\n'.green);
-                console.log('City: ', );
-                console.log('Lat: ', );
-                console.log('Lng: ', );
-                console.log('Temperature: ', );
-                console.log('Min: ', );
-                console.log('Max: ', );
+                console.log('City: ', selectedCity.name);
+                console.log('Lat: ', selectedCity.lat);
+                console.log('Lng: ', selectedCity.lng);
+                console.log('Temperature: ', weather.temp);
+                console.log('Min: ', weather.min);
+                console.log('Max: ', weather.max);
+                console.log('Humidity: ', weather.humidity);
+                console.log('Description: ', weather.desc);
                 break;
         }
 
