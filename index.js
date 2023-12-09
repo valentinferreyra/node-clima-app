@@ -19,7 +19,10 @@ const main = async () => {
                 // Search cities
                 const places = await search.searchCity(input);
                 const selectedId = await listCities(places);
+                if (selectedId === '0') continue;
+
                 const selectedCity = places.find( place => place.id === selectedId);  
+                search.addHistory(selectedCity.name);
 
                 // Search weather of the city
                 const weather = await search.weatherCity(selectedCity.lat, selectedCity.lng);
@@ -33,6 +36,14 @@ const main = async () => {
                 console.log('Max: ', weather.max);
                 console.log('Humidity: ', weather.humidity);
                 console.log('Description: ', weather.desc);
+                break;
+
+            case 2:
+                console.log('\nRecord:'.green);
+                search.historyCapitalized.forEach( (place, i) => {
+                    const idx = `${i + 1}.`.green;
+                    console.log(`${idx} ${place}`);
+                });
                 break;
         }
 
